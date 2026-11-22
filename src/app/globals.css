@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/*
+ * Tokens de diseño (SPEC-WEB §4.2).
+ * Los componentes usan SOLO estas variables, a través de las utilidades de
+ * Tailwind que define @theme (bg-fondo, text-texto-2, border-separador…).
+ * Nunca un color suelto como #2F6BFF o bg-blue-600.
+ */
+:root {
+  --fondo: #f5f5f7;
+  --superficie: #ffffff;
+  --superficie-2: #e3e3e8;
+  --texto: #1d1d1f;
+  --texto-2: #6e6e73;
+  --separador: #d2d2d7;
+  --acento: #2f6bff;
+  --acento-suave: color-mix(in srgb, var(--acento) 12%, transparent);
+  --exito: #1a7f37;
+  --aviso-fondo: #fff4e0;
+  --aviso: #8a4b00;
+  --peligro-fondo: #fdecec;
+  --peligro: #b42318;
+  --completada: #ededf0;
+  --ahora: #e5484d;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #000000;
+    --superficie: #1c1c1e;
+    --superficie-2: #2c2c2e;
+    --texto: #f5f5f7;
+    --texto-2: #98989d;
+    --separador: #38383a;
+    --acento-suave: color-mix(in srgb, var(--acento) 25%, transparent);
+    --exito: #30d158;
+    --aviso-fondo: #3a2a10;
+    --aviso: #ffb340;
+    --peligro-fondo: #3b1716;
+    --peligro: #ff6961;
+    --completada: #2c2c2e;
+    --ahora: #ff453a;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-fondo: var(--fondo);
+  --color-superficie: var(--superficie);
+  --color-superficie-2: var(--superficie-2);
+  --color-texto: var(--texto);
+  --color-texto-2: var(--texto-2);
+  --color-separador: var(--separador);
+  --color-acento: var(--acento);
+  --color-acento-suave: var(--acento-suave);
+  --color-exito: var(--exito);
+  --color-aviso-fondo: var(--aviso-fondo);
+  --color-aviso: var(--aviso);
+  --color-peligro-fondo: var(--peligro-fondo);
+  --color-peligro: var(--peligro);
+  --color-completada: var(--completada);
+  --color-ahora: var(--ahora);
+
+  --font-sans: var(--fuente-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Escala tipográfica (SPEC-WEB §4.3) */
+  --text-titulo-grande: 34px;
+  --text-titulo-grande--line-height: 41px;
+  --text-titulo: 28px;
+  --text-titulo--line-height: 34px;
+  --text-seccion: 22px;
+  --text-seccion--line-height: 28px;
+  --text-destacado: 17px;
+  --text-destacado--line-height: 22px;
+  --text-cuerpo: 15px;
+  --text-cuerpo--line-height: 20px;
+  --text-rotulo: 13px;
+  --text-rotulo--line-height: 18px;
+  --text-nota: 12px;
+  --text-nota--line-height: 16px;
+
+  /* Radios (SPEC-WEB §4.3) */
+  --radius-grupo: 16px;
+  --radius-control: 12px;
+}
+
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  letter-spacing: -0.2px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Foco visible en todo control (SPEC-WEB §4.5) */
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
