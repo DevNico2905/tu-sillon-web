@@ -35,3 +35,10 @@ export type Cita = ConNulos<Completo<Esquemas["CitaResponse"]>, "nota">;
 export type SolicitudChat = Esquemas["ChatRequest"];
 export type TurnoChat = Esquemas["TurnoChat"];
 export type RespuestaChat = Pick<Completo<Esquemas["ChatResponse"]>, "respuesta" | "escalado">;
+
+export type RespuestaAuth = Completo<Esquemas["AuthResponse"]>;
+export type Rol = RespuestaAuth["rol"];
+export type Usuario = Pick<RespuestaAuth, "usuarioId" | "nombre" | "rol" | "salonId" | "salonSlug">;
+export type SolicitudLogin = Esquemas["LoginRequest"];
+export type SolicitudRegistro = Esquemas["RegistroRequest"];
+export type Salon = Completo<Esquemas["SalonResponse"]>;

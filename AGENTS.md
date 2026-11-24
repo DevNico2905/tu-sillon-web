@@ -30,6 +30,7 @@ El front **presenta** reglas; nunca las calcula ni las reinterpreta. Si una pant
 - `src/app/`: rutas. Componentes de servidor por defecto; `"use client"` solo donde hay estado, efectos o eventos.
 - `src/api/cliente.ts`: **el único** lugar que llama a `fetch`. Los componentes usan `peticion` a través de hooks de TanStack Query.
 - `src/api/esquema.ts`: tipos generados con `pnpm gen:api`. Nunca lo edites a mano ni escribas tipos de la API a mano.
+- `src/sesion/`: la sesión del panel. `sesion.ts` guarda el access token en memoria y coordina el refresh; `proveedor-sesion.tsx` protege `/panel`. Nadie más guarda ni lee el token.
 - `src/lib/formato.ts`: dinero, horas, fechas, duraciones y teléfonos. Nunca formatees con `Intl`, `toLocaleString` ni `toLocaleDateString`.
 - `src/components/ui/`: componentes base (shadcn/ui adaptados). `src/components/<dominio>/`: componentes de pantalla.
 - Los tests van junto al archivo que prueban: `formato.ts` → `formato.test.ts`.

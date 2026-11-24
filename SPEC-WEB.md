@@ -40,22 +40,23 @@ Esta SPEC es la fuente de verdad del front. Las reglas de negocio viven en el `S
 
 ### 3.1 Rutas
 
-| Ruta                        | Quién            | Render                                                     | Pantalla                             |
-| --------------------------- | ---------------- | ---------------------------------------------------------- | ------------------------------------ |
-| `/s/[slug]`                 | Público          | Servidor (catálogo) + cliente (selección y disponibilidad) | Página del salón y reserva           |
-| `/s/[slug]/reservar`        | Público          | Cliente                                                    | Tus datos y confirmar                |
-| `/s/[slug]/reserva-enviada` | Público          | Cliente                                                    | Confirmación                         |
-| `/entrar`                   | Público          | Cliente                                                    | Inicio de sesión                     |
-| `/registro`                 | Público          | Cliente                                                    | Crear el salón y la cuenta del dueño |
-| `/panel`                    | DUENO, ESTILISTA | Cliente                                                    | Redirige a `/panel/agenda`           |
-| `/panel/agenda`             | DUENO, ESTILISTA | Cliente                                                    | Agenda del día                       |
-| `/panel/solicitudes`        | DUENO            | Cliente                                                    | Bandeja del chatbot                  |
-| `/panel/servicios`          | DUENO            | Cliente                                                    | Catálogo                             |
-| `/panel/equipo`             | DUENO            | Cliente                                                    | Estilistas                           |
-| `/panel/clientes`           | DUENO            | Cliente                                                    | Lista de clientes (solo lectura)     |
-| `/panel/plan`               | DUENO            | Cliente                                                    | Plan y pagos                         |
-| `/panel/configuracion`      | DUENO            | Cliente                                                    | Horario y datos del salón            |
-| `/panel/pago/resultado`     | DUENO            | Cliente                                                    | Vuelta desde la pasarela de pagos    |
+| Ruta                        | Quién            | Render                                                     | Pantalla                                                                      |
+| --------------------------- | ---------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `/s/[slug]`                 | Público          | Servidor (catálogo) + cliente (selección y disponibilidad) | Página del salón y reserva                                                    |
+| `/s/[slug]/reservar`        | Público          | Cliente                                                    | Tus datos y confirmar                                                         |
+| `/s/[slug]/reserva-enviada` | Público          | Cliente                                                    | Confirmación                                                                  |
+| `/entrar`                   | Público          | Cliente                                                    | Inicio de sesión                                                              |
+| `/registro`                 | Público          | Cliente                                                    | Crear el salón y la cuenta del dueño                                          |
+| `/panel`                    | DUENO, ESTILISTA | Cliente                                                    | Redirige a `/panel/agenda`                                                    |
+| `/panel/agenda`             | DUENO, ESTILISTA | Cliente                                                    | Agenda del día                                                                |
+| `/panel/solicitudes`        | DUENO            | Cliente                                                    | Bandeja del chatbot                                                           |
+| `/panel/servicios`          | DUENO            | Cliente                                                    | Catálogo                                                                      |
+| `/panel/equipo`             | DUENO            | Cliente                                                    | Estilistas                                                                    |
+| `/panel/clientes`           | DUENO            | Cliente                                                    | Lista de clientes (solo lectura)                                              |
+| `/panel/plan`               | DUENO            | Cliente                                                    | Plan y pagos                                                                  |
+| `/panel/configuracion`      | DUENO            | Cliente                                                    | Horario y datos del salón                                                     |
+| `/panel/mas`                | DUENO, ESTILISTA | Cliente                                                    | Pestaña "Más" del celular: secciones que no caben en la barra y cerrar sesión |
+| `/panel/pago/resultado`     | DUENO            | Cliente                                                    | Vuelta desde la pasarela de pagos                                             |
 
 - El chat **no** es una ruta: es una hoja que se abre sobre `/s/[slug]`.
 - El catálogo de `/s/[slug]` se pide en el servidor con revalidación de 60 s. Es la vitrina del salón: carga rápido y tiene metadatos para buscadores y para la vista previa en WhatsApp (título, descripción, imagen genérica).
@@ -256,6 +257,7 @@ Cada pantalla define su estado de **carga** (esqueletos con la forma del conteni
 **Escritorio (≥ 1024 px):**
 
 - **Menú lateral:** salón y plan, Agenda, Solicitudes (con la cantidad pendiente), Servicios, Equipo, Clientes, Plan, Configuración, Cerrar sesión.
+- **Secciones que todavía no existen** (F3 a F6) aparecen en el menú con una pantalla de "Pronto" que dice qué traerá y en qué ticket.
 - **Cabecera:** fecha larga, "Agenda", navegación anterior · hoy · siguiente, y "Nueva cita".
 - **Cifras:**
 

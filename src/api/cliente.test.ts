@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { configurarToken, ErrorApi, peticion, separarCampos } from "./cliente";
+import { configurarSesion, ErrorApi, peticion, separarCampos } from "./cliente";
 
 const API = "http://localhost:8080";
 
@@ -16,7 +16,7 @@ describe("peticion", () => {
   beforeEach(() => {
     vi.stubEnv("NEXT_PUBLIC_API_URL", API);
     vi.stubGlobal("fetch", fetchFalso);
-    configurarToken(() => null);
+    configurarSesion({ obtenerToken: () => null, refrescar: async () => false });
   });
 
   afterEach(() => {
@@ -36,7 +36,7 @@ describe("peticion", () => {
   });
 
   it("envía el token si hay sesión", async () => {
-    configurarToken(() => "abc");
+    configurarSesion({ obtenerToken: () => "abc", refrescar: async () => false });
     fetchFalso.mockResolvedValue(respuestaJson(200, {}));
     await peticion("/api/salon");
     const cabeceras = fetchFalso.mock.calls[0][1]?.headers as Headers;
@@ -105,6 +105,68 @@ describe("peticion", () => {
   it("devuelve undefined en un 204", async () => {
     fetchFalso.mockResolvedValue(new Response(null, { status: 204 }));
     await expect(peticion("/api/auth/logout", { metodo: "POST" })).resolves.toBeUndefined();
+  });
+});
+
+describe("reintento tras 401 (S3)", () => {
+  const fetchFalso = vi.fn<typeof fetch>();
+  let token = "vencido";
+
+  beforeEach(() => {
+    vi.stubEnv("NEXT_PUBLIC_API_URL", API);
+    vi.stubGlobal("fetch", fetchFalso);
+    token = "vencido";
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+    fetchFalso.mockReset();
+  });
+
+  const autorizacion = (llamada: number) =>
+    (fetchFalso.mock.calls[llamada][1]?.headers as Headers).get("Authorization");
+
+  it("refresca y reintenta una vez con el token nuevo", async () => {
+    const refrescar = vi.fn(async () => {
+      token = "nuevo";
+      return true;
+    });
+    configurarSesion({ obtenerToken: () => token, refrescar });
+    fetchFalso
+      .mockResolvedValueOnce(respuestaJson(401, { mensaje: "Token vencido" }))
+      .mockResolvedValueOnce(respuestaJson(200, { ok: true }));
+
+    await expect(peticion("/api/salon")).resolves.toEqual({ ok: true });
+    expect(refrescar).toHaveBeenCalledTimes(1);
+    expect(autorizacion(0)).toBe("Bearer vencido");
+    expect(autorizacion(1)).toBe("Bearer nuevo");
+  });
+
+  it("si el refresh falla, responde el 401 sin reintentar", async () => {
+    configurarSesion({ obtenerToken: () => token, refrescar: async () => false });
+    fetchFalso.mockResolvedValue(respuestaJson(401, { mensaje: "Token vencido" }));
+    const error = (await peticion("/api/salon").catch((e: unknown) => e)) as ErrorApi;
+    expect(error.codigo).toBe(401);
+    expect(fetchFalso).toHaveBeenCalledTimes(1);
+  });
+
+  it("no intenta refrescar en /api/auth/* ni sin sesión", async () => {
+    const refrescar = vi.fn(async () => true);
+    configurarSesion({ obtenerToken: () => null, refrescar });
+    fetchFalso.mockImplementation(async () =>
+      respuestaJson(401, { mensaje: "Correo o contraseña incorrectos" }),
+    );
+    await peticion("/api/auth/login", { metodo: "POST" }).catch(() => undefined);
+    await peticion("/api/citas").catch(() => undefined);
+    expect(refrescar).not.toHaveBeenCalled();
+  });
+
+  it("las rutas de auth nunca llevan el access token", async () => {
+    configurarSesion({ obtenerToken: () => "abc", refrescar: async () => false });
+    fetchFalso.mockResolvedValue(respuestaJson(200, {}));
+    await peticion("/api/auth/refresh", { metodo: "POST" });
+    expect(autorizacion(0)).toBeNull();
   });
 });
 
