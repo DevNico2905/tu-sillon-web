@@ -8,7 +8,9 @@ import { useCallback, useEffect, useState } from "react";
  */
 export function useCuentaRegresiva() {
   const [hasta, setHasta] = useState<number | null>(null);
-  const [ahora, setAhora] = useState(() => Date.now());
+  // Arranca en 0: solo se usa cuando hay cuenta, y `iniciar` lo fija. Leer el reloj al renderizar
+  // impediría prerenderizar las páginas que usan este hook.
+  const [ahora, setAhora] = useState(0);
 
   useEffect(() => {
     if (hasta === null) return;

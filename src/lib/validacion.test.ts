@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { esquemaDatosChat, esquemaDatosReserva } from "./validacion";
+import { esquemaDatosChat, esquemaDatosReserva, esquemaRegistro, fortalezaContrasena } from "./validacion";
 
 describe("esquemaDatosReserva", () => {
   it("acepta datos válidos y recorta espacios", () => {
@@ -25,5 +25,39 @@ describe("esquemaDatosChat", () => {
   it("limita el contacto a 120 caracteres", () => {
     expect(esquemaDatosChat.safeParse({ nombre: "Ana", contacto: "a".repeat(121) }).success).toBe(false);
     expect(esquemaDatosChat.safeParse({ nombre: "Ana", contacto: "ana@correo.co" }).success).toBe(true);
+  });
+});
+
+describe("registro", () => {
+  const valido = {
+    salonNombre: "Barbería Centro",
+    ciudad: "Rionegro",
+    direccion: "Calle 50",
+    telefono: "3001234567",
+    nombre: "Nick",
+    email: "nick@correo.co",
+    password: "clave-segura-123",
+  };
+
+  it("acepta un registro completo", () => {
+    expect(esquemaRegistro.safeParse(valido).success).toBe(true);
+  });
+
+  it("rechaza correo inválido y contraseña corta o de más de 72", () => {
+    expect(esquemaRegistro.safeParse({ ...valido, email: "nick" }).success).toBe(false);
+    expect(esquemaRegistro.safeParse({ ...valido, password: "corta" }).success).toBe(false);
+    expect(esquemaRegistro.safeParse({ ...valido, password: "x".repeat(73) }).success).toBe(false);
+  });
+});
+
+describe("fortalezaContrasena", () => {
+  it.each([
+    ["abc", 0],
+    ["abcdefgh", 1],
+    ["abcdefgh12", 1],
+    ["Abcdefgh12", 2],
+    ["Abcdefgh12!x", 3],
+  ] as const)("%s → nivel %d", (contrasena, nivel) => {
+    expect(fortalezaContrasena(contrasena).nivel).toBe(nivel);
   });
 });

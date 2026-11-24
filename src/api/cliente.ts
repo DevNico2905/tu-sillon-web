@@ -33,13 +33,21 @@ export interface OpcionesPeticion {
   senal?: AbortSignal;
 }
 
-type ProveedorToken = () => string | null;
+/**
+ * Lo que el cliente necesita de la sesión (SPEC-WEB §3.3). La registra
+ * `src/sesion/sesion.ts`; el cliente no sabe cómo se guarda el token.
+ */
+export interface ManejadorSesion {
+  /** Access token actual, solo en memoria (S1), o null sin sesión. */
+  obtenerToken: () => string | null;
+  /** Pide un access token nuevo con la cookie de refresh. true si lo consiguió (S3). */
+  refrescar: () => Promise<boolean>;
+}
 
-let proveedorToken: ProveedorToken = () => null;
+let sesion: ManejadorSesion = { obtenerToken: () => null, refrescar: async () => false };
 
-/** La sesión (F2) registra aquí de dónde sale el access token. El token vive solo en memoria (S1). */
-export function configurarToken(proveedor: ProveedorToken): void {
-  proveedorToken = proveedor;
+export function configurarSesion(manejador: ManejadorSesion): void {
+  sesion = manejador;
 }
 
 export function urlBaseApi(): string {
@@ -106,15 +114,29 @@ export function mensajePorDefecto(codigo: number): string {
 }
 
 export async function peticion<T>(ruta: string, opciones: OpcionesPeticion = {}): Promise<T> {
+  // Las rutas de auth usan la cookie, nunca el access token.
+  const token = ruta.startsWith("/api/auth/") ? null : sesion.obtenerToken();
+  let respuesta = await enviar(ruta, opciones, token);
+
+  // Access token vencido: un refresh (compartido entre peticiones, S3) y un solo reintento.
+  if (respuesta.status === 401 && token && (await sesion.refrescar())) {
+    respuesta = await enviar(ruta, opciones, sesion.obtenerToken());
+  }
+
+  if (!respuesta.ok) throw await convertirError(respuesta);
+  if (respuesta.status === 204) return undefined as T;
+  const texto = await respuesta.text();
+  return (texto ? JSON.parse(texto) : undefined) as T;
+}
+
+async function enviar(ruta: string, opciones: OpcionesPeticion, token: string | null): Promise<Response> {
   const { metodo = "GET", cuerpo, consulta, senal } = opciones;
   const cabeceras = new Headers({ Accept: "application/json" });
   if (cuerpo !== undefined) cabeceras.set("Content-Type", "application/json");
-  const token = proveedorToken();
   if (token) cabeceras.set("Authorization", `Bearer ${token}`);
 
-  let respuesta: Response;
   try {
-    respuesta = await fetch(construirUrl(ruta, consulta), {
+    return await fetch(construirUrl(ruta, consulta), {
       method: metodo,
       headers: cabeceras,
       body: cuerpo === undefined ? undefined : JSON.stringify(cuerpo),
@@ -126,9 +148,4 @@ export async function peticion<T>(ruta: string, opciones: OpcionesPeticion = {})
     if (error instanceof DOMException && error.name === "AbortError") throw error;
     throw new ErrorApi(0, mensajePorDefecto(0));
   }
-
-  if (!respuesta.ok) throw await convertirError(respuesta);
-  if (respuesta.status === 204) return undefined as T;
-  const texto = await respuesta.text();
-  return (texto ? JSON.parse(texto) : undefined) as T;
 }
