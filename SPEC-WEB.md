@@ -216,7 +216,7 @@ Cada pantalla define su estado de **carga** (esqueletos con la forma del conteni
 - Muestra el resumen como lista agrupada (servicio, barbero, cuándo, valor).
 - Campos: nombre (obligatorio, máximo 100), celular (obligatorio, de 7 a 30, con prefijo `+57` visible) y nota opcional (máximo 300). Zod aplica los mismos límites que el backend.
 - Debajo del botón: "Tu reserva queda pendiente hasta que [salón] la confirme. Pagas en el salón."
-- **409 por hora ocupada:** "Alguien acaba de tomar esa hora. Elige otra.", con un botón que vuelve a la hora con la disponibilidad recargada.
+- **409:** el mensaje del backend tal cual (por ejemplo "Ya no hay estilistas libres para Corte clásico en ese horario"), con el botón "Elegir otra hora", que vuelve a la página del salón sin la hora y con la disponibilidad recargada. Se usa el mensaje del backend y no un texto fijo porque el 409 también cubre una hora que ya pasó o un salón cerrado.
 - Mientras se envía, el botón muestra "Reservando…" y no admite un segundo envío.
 
 ### 5.3 Reserva enviada · `/s/[slug]/reserva-enviada` (F1)
@@ -310,7 +310,7 @@ Van como tickets del repo `tu-sillon` **antes** del ticket del front que los nec
 | **B8**  | Tono de tú en todos los mensajes y prompts (R41)                                                                                                                     | F1              | Hecho                              |
 | **B9**  | Horario estructurado en el catálogo público (R42)                                                                                                                    | F1              | Hecho                              |
 | **B10** | Desplegar la API en `api.sillon.nick-bern.com` y agregar `https://sillon.nick-bern.com` a `CORS_ORIGENES`                                                            | F0 (producción) | En pausa hasta decidir la pasarela |
-| **B11** | Exponer `Retry-After` por CORS (`setExposedHeaders`). Sin eso, el navegador no deja leer la cabecera desde otro origen y el 429 no puede mostrar la cuenta regresiva | F1, F2          | Pendiente                          |
+| **B11** | Exponer `Retry-After` por CORS (`setExposedHeaders`). Sin eso, el navegador no deja leer la cabecera desde otro origen y el 429 no puede mostrar la cuenta regresiva | F1, F2          | Hecho                              |
 
 ## 7. Plan de tickets del front
 
