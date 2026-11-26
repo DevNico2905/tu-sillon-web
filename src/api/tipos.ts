@@ -49,3 +49,11 @@ export type Recordatorio = Pick<
   Completo<Esquemas["RecordatorioResponse"]>,
   "citaId" | "telefonoCliente" | "mensaje"
 >;
+
+export type SolicitudServicio = Esquemas["ServicioRequest"];
+export type Estilista = Completo<Esquemas["EstilistaResponse"]>;
+export type SolicitudEstilista = Esquemas["EstilistaRequest"];
+export type SolicitudEditarEstilista = Esquemas["EstilistaActualizacionRequest"];
+export type Cliente = Completo<Esquemas["ClienteResponse"]>;
+export type SolicitudDatosSalon = Esquemas["DatosSalonRequest"];
+export type SolicitudConfiguracion = Esquemas["ConfiguracionRequest"];

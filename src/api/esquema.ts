@@ -20,6 +20,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/salon": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["miSalon"];
+        put: operations["actualizarDatos"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/salon/configuracion": {
         parameters: {
             query?: never;
@@ -29,6 +45,22 @@ export interface paths {
         };
         get?: never;
         put: operations["configurar"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/estilistas/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["actualizar_1"];
         post?: never;
         delete?: never;
         options?: never;
@@ -294,22 +326,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/salon": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["miSalon"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/publico/salones/{slug}": {
         parameters: {
             query?: never;
@@ -414,14 +430,11 @@ export interface components {
             precio?: number;
             activo?: boolean;
         };
-        ConfiguracionRequest: {
-            /** Format: time-local */
-            horaApertura: string;
-            /** Format: time-local */
-            horaCierre: string;
-            abreDomingos: boolean;
-            /** Format: int32 */
-            intervaloMinutos: number;
+        DatosSalonRequest: {
+            nombre: string;
+            ciudad: string;
+            direccion: string;
+            telefono: string;
         };
         ConfiguracionResponse: {
             /** Format: time-local */
@@ -447,6 +460,30 @@ export interface components {
             configuracion?: components["schemas"]["ConfiguracionResponse"];
             /** Format: date-time */
             fechaCreacion?: string;
+        };
+        ConfiguracionRequest: {
+            /** Format: time-local */
+            horaApertura: string;
+            /** Format: time-local */
+            horaCierre: string;
+            abreDomingos: boolean;
+            /** Format: int32 */
+            intervaloMinutos: number;
+        };
+        EstilistaActualizacionRequest: {
+            nombre: string;
+            servicioIds: number[];
+            activo: boolean;
+            password?: string;
+        };
+        EstilistaResponse: {
+            /** Format: int64 */
+            id?: number;
+            nombre?: string;
+            email?: string;
+            activo?: boolean;
+            servicios?: string[];
+            servicioIds?: number[];
         };
         CitaRequest: {
             clienteNombre: string;
@@ -530,14 +567,6 @@ export interface components {
             email: string;
             password: string;
             servicioIds: number[];
-        };
-        EstilistaResponse: {
-            /** Format: int64 */
-            id?: number;
-            nombre?: string;
-            email?: string;
-            activo?: boolean;
-            servicios?: string[];
         };
         RecordatorioResponse: {
             /** Format: int64 */
@@ -668,6 +697,50 @@ export interface operations {
             };
         };
     };
+    miSalon: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SalonResponse"];
+                };
+            };
+        };
+    };
+    actualizarDatos: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosSalonRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SalonResponse"];
+                };
+            };
+        };
+    };
     configurar: {
         parameters: {
             query?: never;
@@ -688,6 +761,32 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["SalonResponse"];
+                };
+            };
+        };
+    };
+    actualizar_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EstilistaActualizacionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EstilistaResponse"];
                 };
             };
         };
@@ -1120,26 +1219,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["SolicitudResponse"][];
-                };
-            };
-        };
-    };
-    miSalon: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["SalonResponse"];
                 };
             };
         };

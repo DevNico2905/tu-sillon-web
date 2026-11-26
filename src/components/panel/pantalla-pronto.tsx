@@ -1,10 +1,21 @@
 import type { ReactNode } from "react";
 
-/** Cabecera común de las pantallas del panel. */
-export function CabeceraPanel({ titulo, children }: { titulo: string; children?: ReactNode }) {
+/** Cabecera común de las pantallas del panel. `accion` va a la derecha del título (por ejemplo "Nuevo"). */
+export function CabeceraPanel({
+  titulo,
+  accion,
+  children,
+}: {
+  titulo: string;
+  accion?: ReactNode;
+  children?: ReactNode;
+}) {
   return (
     <header className="flex flex-col gap-1 px-5 pt-8 pb-4 md:px-8">
-      <h1 className="text-titulo font-bold">{titulo}</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-titulo font-bold">{titulo}</h1>
+        {accion}
+      </div>
       {children}
     </header>
   );
