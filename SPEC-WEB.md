@@ -261,18 +261,18 @@ Cada pantalla define su estado de **carga** (esqueletos con la forma del conteni
 - **Cabecera:** fecha larga, "Agenda", navegación anterior · hoy · siguiente, y "Nueva cita".
 - **Cifras:**
 
-  | Cifra              | Cómo se calcula                                                                        |
-  | ------------------ | -------------------------------------------------------------------------------------- |
-  | Citas hoy          | Todas las citas del día                                                                |
-  | Por confirmar      | Citas PENDIENTE                                                                        |
-  | Ingresos esperados | Suma del precio de las citas PENDIENTE, CONFIRMADA y COMPLETADA, calculada en el front |
-  | Cuarta cifra       | Por definir con el modelo de negocio (los créditos de IA dejan de mostrarse al dueño)  |
+  | Cifra              | Cómo se calcula                                                                                                              |
+  | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+  | Citas hoy          | Todas las citas del día                                                                                                      |
+  | Por confirmar      | Citas PENDIENTE                                                                                                              |
+  | Ingresos esperados | Suma del precio de las citas PENDIENTE, CONFIRMADA y COMPLETADA, calculada en el front                                       |
+  | Completadas        | Citas COMPLETADA y su valor: lo que el salón ya facturó en el día (decisión del 24 nov 2026; reemplaza a los créditos de IA) |
 
-- **Línea de tiempo:** una columna por estilista activo, de la apertura al cierre del salón, a 64 px por hora. Cada cita es un bloque con hora, cliente y servicio. Colores por estado (§4.2), y la línea de "ahora" si la fecha es hoy.
+- **Línea de tiempo:** una columna por estilista activo (más los que tengan citas ese día aunque ya no estén activos), de la apertura al cierre del salón, a 64 px por hora, ampliada si alguna cita queda por fuera. Las citas canceladas no ocupan la línea de tiempo; en la lista del celular aparecen tachadas. Cada cita es un bloque con hora, cliente y servicio. Colores por estado (§4.2), y la línea de "ahora" si la fecha es hoy.
 - **Panel de detalle de la cita seleccionada:**
   - estado y origen, cliente con teléfono (enlace `tel:`), servicio, hora, barbero, valor y nota;
   - las acciones permitidas **según la tabla de transiciones del backend**: de PENDIENTE se puede Confirmar o Cancelar; de CONFIRMADA, Completada, No asistió o Cancelar; los estados finales no tienen acciones;
-  - "Redactar recordatorio", solo para citas PENDIENTE o CONFIRMADA.
+  - "Redactar recordatorio", solo para el dueño y para citas PENDIENTE o CONFIRMADA. No se muestran créditos: si el salón llega a su límite de uso, el 402 muestra el mensaje del backend y "Ver planes".
 
 **Celular:**
 
@@ -280,9 +280,9 @@ Cada pantalla define su estado de **carga** (esqueletos con la forma del conteni
 - Debajo, la lista del día con la marca de la hora actual y una barra de pestañas: Agenda, Solicitudes, Equipo y Más.
 - Tocar una cita abre su detalle como hoja, con las mismas acciones que en escritorio.
 
-**Recordatorio:** se abre una hoja con el mensaje generado, el teléfono del cliente, "Copiar" y "Abrir WhatsApp" (`https://wa.me/<telefono>?text=<mensaje>`). En esta versión Sillón nunca envía nada solo; el envío automático por WhatsApp es una función futura del modelo de negocio.
+**Recordatorio:** se abre una hoja con el mensaje generado, que se puede ajustar, el teléfono del cliente, "Copiar" y "Abrir WhatsApp" (`https://wa.me/<telefono>?text=<mensaje>`). La redacción se pide al tocar el botón, nunca en un efecto, porque cada pedido usa IA. En esta versión Sillón nunca envía nada solo; el envío automático por WhatsApp es una función futura del modelo de negocio.
 
-**Estilista:** la misma agenda, solo con sus citas, sin cifras de ingresos y con dos acciones únicamente: "Completada" y "No asistió".
+**Estilista:** la misma agenda, solo con sus citas (el backend las filtra), sin valores en pesos y con dos acciones únicamente, "Completada" y "No asistió", que solo aparecen en citas CONFIRMADA. El horario y el equipo salen del catálogo público del salón, que el estilista sí puede leer.
 
 **Criterios:**
 
