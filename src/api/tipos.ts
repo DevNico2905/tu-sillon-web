@@ -42,3 +42,10 @@ export type Usuario = Pick<RespuestaAuth, "usuarioId" | "nombre" | "rol" | "salo
 export type SolicitudLogin = Esquemas["LoginRequest"];
 export type SolicitudRegistro = Esquemas["RegistroRequest"];
 export type Salon = Completo<Esquemas["SalonResponse"]>;
+
+export type EstadoCita = Cita["estado"];
+export type SolicitudCambioEstado = Esquemas["CambioEstadoRequest"];
+export type Recordatorio = Pick<
+  Completo<Esquemas["RecordatorioResponse"]>,
+  "citaId" | "telefonoCliente" | "mensaje"
+>;

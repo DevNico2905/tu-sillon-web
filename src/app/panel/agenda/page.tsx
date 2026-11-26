@@ -1,21 +1,16 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { Agenda } from "@/components/agenda/agenda";
 import { Bienvenida } from "@/components/panel/bienvenida";
-import { PantallaPronto } from "@/components/panel/pantalla-pronto";
 
 export const metadata: Metadata = { title: "Agenda" };
 
+/** Agenda del día (SPEC-WEB §5.6). La fecha vive en la URL: ?fecha=2026-11-23. */
 export default function PaginaAgenda() {
   return (
-    <>
-      <Suspense>
-        <Bienvenida />
-      </Suspense>
-      <PantallaPronto
-        titulo="Agenda"
-        ticket="F3"
-        descripcion="Aquí verás las citas del día, por barbero, y podrás confirmarlas o marcarlas como completadas."
-      />
-    </>
+    <Suspense>
+      <Bienvenida />
+      <Agenda />
+    </Suspense>
   );
 }
